@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from cif_tools import cif_functions as cf
+#from cif_tools import cif_functions as cf
+import cif_functions as cf
 
 # n_arc and n_grids
 
@@ -15,14 +16,17 @@ def main(filename,
     pixel_name = "meander_polekid",
     index_offset = 0,
     draw_entire_pixel = True,
+    
+    
+    
     draw_left = True,
     draw_right = True,
     meander_inside = False,
-    n_lines = 12, #must be even
-    arc_width = int(800*nanometers),
-    arc_width_right = int(800*nanometers),
-    arc_gap = int(1.5*microns),
-    n_arcs = 6,# default = 2 must be even
+    n_lines = 4,#, #must be even
+    arc_width = int(1100*nanometers),#int(800*nanometers),
+    arc_width_right = int(1100*nanometers),#int(800*nanometers),
+    arc_gap = int(1.1*microns),
+    n_arcs = 8,#6,# default = 2 must be even
     absorber_extension_length = 3*microns,
     grid_spacing = int(250*microns), #ums ABSLength in excel
     line_width = int(800*nanometers), # 0.8 um
@@ -33,17 +37,17 @@ def main(filename,
     meander_height = int(1200*nanometers), #1200
     capacitor_rail_width = int(10*microns),
     coupling_capacitor_rail_width = int(10*microns),
-    number_of_fingers = 25,
-    number_of_fingers_right = 15,
+    number_of_fingers = 13,#25,
+    number_of_fingers_right = 30,#12,#15,
     capacitor_finger_overlap = 900*microns,
-    capacitor_finger_end_gap = 5*microns,
+    capacitor_finger_end_gap = 12*microns,#5*microns,
     capacitor_offset_y = -0*microns,
-    capacitor_finger_width = 5*microns, #7 microns with meanders 6 without  #now 5 and 4
-    capacitor_finger_width_right = 8*microns, #7 microns with meanders 6 without  #now 5 and 4
-    coupling_capacitor_finger_width = 5*microns,
+    capacitor_finger_width = 12*microns,#5*microns, #7 microns with meanders 6 without  #now 5 and 4
+    capacitor_finger_width_right = 5*microns,#8*microns, #7 microns with meanders 6 without  #now 5 and 4
+    coupling_capacitor_finger_width = 5*microns,#5*microns,
     coupling_capacitor_finger_width_right = 5*microns,
     capacitor_to_coupling_capacitor_gap = 25*microns,
-    number_of_coupling_fingers = 30,
+    number_of_coupling_fingers = 20,#20,
     number_of_coupling_fingers_right = 20,
     coupling_finger_overlap = 40*microns,
     coupling_capacitor_finger_end_gap = 5*microns,
@@ -61,14 +65,18 @@ def main(filename,
     arc_layer = 5,
     remove_finger_number = 0,
     remove_finger_number_right = 0,
-    pol_angle = -15,
-    short_width = int(1200*nanometers),
-    short_centers_x = np.linspace(-200,200,41,dtype = int)*microns,#[], # leave as [] for no shorts
-    short_lengths_x = np.round(np.ones(41,dtype = int)*5*microns),
-    short_centers_y = np.hstack((np.linspace(-200,-20,18,dtype = int),np.linspace(20,200,18,dtype = int)))*microns,
-    short_lengths_y = np.round(np.ones(36,dtype = int)*5*microns),
+    pol_angle = -15,#-15,
+    short_width = int(1000*nanometers),
+    short_centers_x = np.linspace(-110,110,55)*microns,#[], # leave as [] for no shorts
+    short_lengths_x = np.round(np.ones(55,dtype = int)*3*microns),
+    short_centers_y = np.hstack((np.linspace(-110,-10,25),np.linspace(10,110,25,dtype = int)))*microns,
+    short_lengths_y = np.round(np.ones(50,dtype = int)*3*microns),
+    aluminum_left = True,
+    aluminum_right = True,
     ic = None):#[], # leave as [] for no shorts):
 
+    
+    
     gap_size = separation_x_pol+between_pol_gap*2+line_width*2+(n_lines-2)*(separation_x_pol+line_width)#4*microns, # ums
     line_length = int(grid_spacing-gap_size/2)
     min_end_meander_length = 6*microns#meander_height/2+line_width
@@ -231,6 +239,8 @@ def main(filename,
     #####################################################################################
 
     # draw capacitor rail
+    #cf.draw_rectangle(f,ic,capacitor_length+capacitor_rail_width-int(30*microns),capacitor_rail_width,layer = capacitor_layer,scale_num = 1,name= 'capacitor_rail') #
+    #cf.draw_rectangle(f,ic,capacitor_length_right+capacitor_rail_width-int(30*microns),capacitor_rail_width,layer = capacitor_layer,scale_num = 1,name= 'capacitor_rail_right') #
     cf.draw_rectangle(f,ic,capacitor_length+capacitor_rail_width,capacitor_rail_width,layer = capacitor_layer,scale_num = 1,name= 'capacitor_rail') #
     cf.draw_rectangle(f,ic,capacitor_length_right+capacitor_rail_width,capacitor_rail_width,layer = capacitor_layer,scale_num = 1,name= 'capacitor_rail_right') #
     # capacitor end connector
@@ -466,7 +476,7 @@ def main(filename,
                              meander_unit_cell_height*number_of_meanders/2+horizontal_connect_meander_length/2,
                              -(separation_x_pol/2+meander_length/2))#top
 
-        #veritcal lines
+        #vertical lines
         if draw_right:
             cf.translate(f,ic.lookup('meandered_line'),(separation_y_pol/2+meander_length/2),
                              -meander_unit_cell_height*number_of_meanders/2-1*separation_x_pol/2-between_pol_gap-meander_length-(meander_unit_cell_height-meander_height/2))#left
@@ -477,7 +487,7 @@ def main(filename,
             cf.translate(f,ic.lookup('meandered_line_mirror'),-(separation_y_pol/2+meander_length/2),
                              meander_unit_cell_height*number_of_meanders/2+1*separation_x_pol/2+between_pol_gap+meander_length+(meander_unit_cell_height-meander_height/2))#right
 
-        #middel connectors
+        #middle connectors
         if draw_left:
             cf.translate(f,ic.lookup('unit_meander_rotated_90'),0,0)
             #cf.translate(f,ic.lookup('unit_meander_rotated_90'),meander_unit_cell_height,0)
@@ -515,11 +525,25 @@ def main(filename,
 
         if draw_left:
             for i in range(0,n_lines):
+                # if i == (n_lines/2)-1 or i == (n_lines/2):
+                #     cf.translate(f,ic.lookup('horizontal_line'),-line_length/2,separation_x_pol/2+line_width/2+(i - n_lines/2)*(line_width+separation_x_pol))#
+                #     cf.translate(f,ic.lookup('horizontal_line'),line_length/2,separation_x_pol/2+line_width/2+(i - n_lines/2)*(line_width+separation_x_pol))#
+                #     print(i)
+                # else:
+                #     cf.translate(f,ic.lookup('horizontal_line'),-1*separation_x_pol/2-line_width-between_pol_gap-line_length/2+(2-n_lines)*(separation_x_pol+line_width)/2,
+                #                      (separation_x_pol/2+line_width/2)+(i - n_lines/2)*(line_width+separation_x_pol))#
+                #     cf.translate(f,ic.lookup('horizontal_line'),-(-1*separation_x_pol/2-line_width-between_pol_gap-line_length/2+(-2-n_lines)*(separation_x_pol+line_width)/2+3*between_pol_gap),
+                #                      (separation_x_pol/2+line_width/2)+(i - n_lines/2)*(line_width+separation_x_pol))
+                #     #cf.translate(f,ic.lookup('horizontal_line'),-line_length/4,separation_x_pol/2+line_width/2+(i - n_lines/2)*(line_width+separation_x_pol))#
+                #     #cf.translate(f,ic.lookup('horizontal_line'),-(line_width/4)*(n_lines/2),separation_x_pol/2+line_width/2+(i - n_lines/2)*(line_width+separation_x_pol))#line_length/2,separation_x_pol/2+line_width/2+(i - n_lines/2)*(line_width+separation_x_pol))#
+                    
                 cf.translate(f,ic.lookup('horizontal_line'),-line_length/2,separation_x_pol/2+line_width/2+(i - n_lines/2)*(line_width+separation_x_pol))#
                 cf.translate(f,ic.lookup('horizontal_line'),line_length/2,separation_x_pol/2+line_width/2+(i - n_lines/2)*(line_width+separation_x_pol))#
+                #print(i - n_lines/2)
                 
-                for k in range(0,len(short_centers_x)):
-                    cf.translate(f,ic.lookup('short_x_'+str(k)),short_centers_x[k],
+                if aluminum_left == True:
+                    for k in range(0,len(short_centers_x)):
+                        cf.translate(f,ic.lookup('short_x_'+str(k)),short_centers_x[k],
                                      separation_x_pol/2+line_width/2+(i - n_lines/2)*(line_width+separation_x_pol))#
 
             
@@ -547,8 +571,9 @@ def main(filename,
                 cf.translate(f,ic.lookup('vertical_line'),(separation_y_pol/2+line_width/2)+(i - n_lines/2)*(line_width+separation_y_pol),
                                  -(-1*separation_x_pol/2-line_width-between_pol_gap-line_length/2+(2-n_lines)*(separation_x_pol+line_width)/2))
 
-                for k in range(0,len(short_centers_y)):
-                    cf.translate(f,ic.lookup('short_y_'+str(k)),(separation_y_pol/2+line_width/2)+(i - n_lines/2)*(line_width+separation_y_pol),
+                if aluminum_right == True:
+                    for k in range(0,len(short_centers_y)):
+                        cf.translate(f,ic.lookup('short_y_'+str(k)),(separation_y_pol/2+line_width/2)+(i - n_lines/2)*(line_width+separation_y_pol),
                                  short_centers_y[k])#left
                     #cf.translate(f,ic.lookup('vertical_line'),(separation_y_pol/2+line_width/2)+(i - n_lines/2)*(line_width+separation_y_pol),
                     #             -(-1*separation_x_pol/2-line_width-between_pol_gap-line_length/2+(2-n_lines)*(separation_x_pol+line_width)/2))
@@ -724,6 +749,27 @@ def main(filename,
                              +capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width/2+capacitor_offset_y)
             cf.translate(f,ic.lookup('capacitor_end_connector'),-(-grid_spacing-capacitor_length_right-3*capacitor_rail_width/2-arc_width*2-arc_gap-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap)),
                             +capacitor_offset_y)
+            
+            
+            
+        # if draw_left:
+        #     cf.translate(f,ic.lookup('capacitor_rail'),-grid_spacing-capacitor_length/2-capacitor_rail_width/2-arc_width*2-arc_gap-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap),
+        #                      -capacitor_finger_overlap/2-capacitor_finger_end_gap-capacitor_rail_width/2+capacitor_offset_y)
+        #     cf.translate(f,ic.lookup('capacitor_rail'),-grid_spacing-capacitor_length/2-capacitor_rail_width/2-arc_width*2-arc_gap-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap),
+        #                      +capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width/2+capacitor_offset_y)
+        #     cf.translate(f,ic.lookup('capacitor_end_connector'),-grid_spacing-capacitor_length-3*capacitor_rail_width/2-arc_width*2-arc_gap-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap),
+        #                     +capacitor_offset_y)
+            
+        # # right side
+        # if draw_right:
+        #     cf.translate(f,ic.lookup('capacitor_rail_right'),-(-grid_spacing-capacitor_length_right/2-capacitor_rail_width/2-arc_width*2-arc_gap-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap)),
+        #                      -capacitor_finger_overlap/2-capacitor_finger_end_gap-capacitor_rail_width/2+capacitor_offset_y)
+        #     cf.translate(f,ic.lookup('capacitor_rail_right'),-(-grid_spacing-capacitor_length_right/2-capacitor_rail_width/2-arc_width*2-arc_gap-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap)),
+        #                      +capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width/2+capacitor_offset_y)
+        #     cf.translate(f,ic.lookup('capacitor_end_connector'),-(-grid_spacing-capacitor_length_right-3*capacitor_rail_width/2-arc_width*2-arc_gap-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap)),
+        #                     +capacitor_offset_y)
+            
+            
         if draw_left:
             cf.translate(f,ic.lookup('capacitor_connector_top'),-grid_spacing-arc_width*2-arc_gap-arc_width/2-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap),
                              (capacitor_connector_length+capacitor_offset_y)/2+arc_gap/2)
@@ -758,7 +804,7 @@ def main(filename,
                              -capacitor_connector_length-arc_gap/2+capacitor_rail_width/2+capacitor_offset_y)
         
 
-        # minus one figer width for start and plus one finger width for last were no gap is needed
+        # minus one finger width for start and plus one finger width for last were no gap is needed
         #number_of_fingers = int((capacitor_length-capacitor_finger_start_gap)*(1-remove_capacitor_finger_fraction)/(capacitor_finger_width*2))-remove_finger_number
         #number_of_fingers_right = int((capacitor_length-capacitor_finger_start_gap)*(1-remove_capacitor_finger_fraction_right)/(capacitor_finger_width_right*2))-remove_finger_number_right
         '''
@@ -887,15 +933,19 @@ def main(filename,
         cf.end_file(f)
     f.close()
 
-    for key in ic.id:
-        print(ic.id[key],key)
+    # for key in ic.id:
+    #     print(ic.id[key],key)
 
     if ic != None:
         ic.appendix_name = ''
         return ic
 
 
-
 if __name__ == "__main__":
+    #filename = "8-arc_1_1um-2-line_0_8um-al_1_3-unshorted.cif"
     filename = "polekid.cif"
     main(filename)
+
+
+
+
