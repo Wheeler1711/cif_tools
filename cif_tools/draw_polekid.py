@@ -17,12 +17,13 @@ def main(filename,
     index_offset = 0,
     L_per_square = 32, #pH
     L_geometric = 0,
+    thickness = 0.032, #ums
     draw_entire_pixel = True,
     draw_left = True,
     draw_right = True,
     meander_inside = False,
-    n_lines = 4,#, #must be multiple of 4
-    n_lines_shorted = 2,#r of 2?
+    n_lines = 8,#, #must be multiple of 4
+    n_lines_shorted = 1,#r of 2?
     arc_width = int(1200*nanometers),#int(800*nanometers),
     arc_width_right = int(1100*nanometers),#int(800*nanometers),
     arc_gap = int(1.0*microns),
@@ -816,10 +817,13 @@ def main(filename,
                 L2 = 0
             # diameter*pi/2*n_arcs
             L = L1+L2+L_geometric*10**-9 # H
+            V = (L1/(L_per_square*10**-12)*line_width/microns*line_width/microns*thickness+\
+              L2/(L_per_square*10**-12)*arc_width/microns*arc_width/microns*thickness)*n_lines_shorted**2
             print("inductance center: %.2f nH" % (L1*10**9))
             print("inductance arcs:   %.2f nH" % (L2*10**9))
             print("inductance geo:    %.2f nH" % (L_geometric))
             print("total inductance:  %.2f nH" % (L*10**9))
+            print("Volume:            %.2f um^3" % (V))        
             freq = 1/2./np.pi/np.sqrt(L*cap)
             print("frequency:         %.2f MHz" % (freq/10**6))
         if draw_right:
@@ -830,15 +834,18 @@ def main(filename,
             print("capacitance:       %.2f pF" % (cap*10**12))
             L1 = L_per_square*(grid_spacing*2-total_short_length_y)/line_width*n_lines/n_lines_shorted**2*10**-12
             if arc_layer == inductor_layer:
-                L2 = L_per_square*(grid_spacing+n_arcs/2*(arc_gap+arc_width))*2/arc_width*np.pi/2*n_arcs/n_lines_shorted**2*10**-12
+                L2 = L_per_square*(grid_spacing*2+n_arcs/2*(arc_gap+arc_width))/arc_width*np.pi/2*n_arcs/n_lines_shorted**2*10**-12
             else:
                 L2 = 0
             # diameter*pi/2*n_arcs
             L = L1+L2+L_geometric*10**-9 # H
+            V = (L1/(L_per_square*10**-12)*line_width/microns*line_width/microns*thickness+\
+              L2/(L_per_square*10**-12)*arc_width/microns*arc_width/microns*thickness)*n_lines_shorted**2
             print("inductance center: %.2f nH" % (L1*10**9))
             print("inductance arcs:   %.2f nH" % (L2*10**9))
             print("inductance geo:    %.2f nH" % (L_geometric))
             print("total inductance:  %.2f nH" % (L*10**9))
+            print("Volume:            %.2f um^3" % (V))  
             freq = 1/2./np.pi/np.sqrt(L*cap)
             print("frequency:         %.2f MHz" % (freq/10**6))
 
