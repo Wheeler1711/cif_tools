@@ -1221,8 +1221,8 @@ cf.draw_rectangle(f,ic,200*microns,600*microns,layer = 8,scale_num = 1,name= 'bo
 cf.draw_rectangle(f,ic,600*microns,200*microns,layer = 8,scale_num = 1,name= 'border_horizontal') #
 cf.draw_rectangle(f,ic,1000*microns,1000*microns,layer = 5,scale_num = 1,name= 'dc_bond_pad') #
 cf.draw_rectangle(f,ic,1000*microns,10*microns,layer = 5,scale_num = 1,name= 'dc_test_wire') #
-cf.draw_rectangle(f,ic,1000*microns,1000*microns,layer = 13,scale_num = 1,name= 'dc_bond_pad_aluminum_cap') #
-cf.draw_rectangle(f,ic,1000*microns,10*microns,layer = 13,scale_num = 1,name= 'dc_test_wire_aluminum_cap') #
+cf.draw_rectangle(f,ic,1000*microns,1000*microns,layer = 4,scale_num = 1,name= 'dc_bond_pad_aluminum_cap') #
+cf.draw_rectangle(f,ic,1000*microns,10*microns,layer = 4,scale_num = 1,name= 'dc_test_wire_aluminum_cap') #
 #cf.draw_rectangle(f,100008,400*microns,400*microns,layer = 9,scale_num = 1,name= 'via_microstrip') #
 #cf.draw_rectangle(f,100009,900*microns,900*microns,layer = 9,scale_num = 1,name= 'via_dc_bond_pad') #
 
