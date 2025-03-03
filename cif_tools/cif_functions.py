@@ -227,7 +227,7 @@ def draw_wire_circle(f,index,radius,thickness,layer = 1,scale_num = 1,scale_deno
         f.write(wire_str+';\n')
     f.write('DF;\n') # end subset
 
-def draw_circle(f,index,radius,layer = 1,scale_num = 1,scale_denom = 1,name  =''):
+def draw_circle(f,index,radius,layer = 1,scale_num = 1,scale_denom = 1,name  ='',num_of_points = 100):
     index, num_index = parse_index_input(index,name)
     f.write('DS '+str(num_index)+' ' +str(scale_num)+' '+str(scale_denom)+ ';\n')
     if name != '':
@@ -240,7 +240,7 @@ def draw_circle(f,index,radius,layer = 1,scale_num = 1,scale_denom = 1,name  =''
     for layer in layers:
         f.write('L L'+str(layer)+'D0;;\n') #layer 5
         circ_str = 'P'+' '
-        angles = np.linspace(-np.pi,np.pi,100)
+        angles = np.linspace(-np.pi,np.pi,num_of_points)
         for i in range(0,len(angles)):
             circ_str += str(int(radius*np.cos(angles[i])))+','+str(int(radius*np.sin(angles[i])))+' '
 
@@ -290,6 +290,7 @@ def draw_arc(f,index,radius,width,start_angle,end_angle,layer = 1,scale_num = 1,
 
         f.write(circ_str+';\n')
     f.write('DF;\n') # end subset
+
 
 def draw_polygon(f,index,x_points,y_points,layer = 1,scale_num = 1,scale_denom = 1,name  =''):
     index, num_index = parse_index_input(index,name)
