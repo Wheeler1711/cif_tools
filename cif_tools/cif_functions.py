@@ -67,13 +67,15 @@ def translate(f,index,x,y):
     f.write('C'+str(index)+' T'+str(int(x))+','+str(int(y))+';\n')
 
 def rotate(f,index,rotation):
-    #print('C'+str(index)+' R'+str(int(np.cos(rotation*np.pi/180)*2147483647))+' '+str(int(np.sin(rotation*np.pi/180)*1000))+';\n')
-    f.write('C'+str(index)+' R'+str(round(np.cos(rotation*np.pi/180)*1000))+' '+str(round(np.sin(rotation*np.pi/180)*1000))+';\n') #need lots of precision 32 bit unsigned integer is max?
+    f.write('C'+str(index)+' R'+str(int(np.cos(rotation*np.pi/180)*2147483647))+' '+str(int(np.sin(rotation*np.pi/180)*2147483647))+';\n')
+    #f.write('C'+str(index)+' R'+str(round(np.cos(rotation*np.pi/180)*1000))+' '+str(round(np.sin(rotation*np.pi/180)*1000))+';\n') #need lots of precision 32 bit unsigned integer is max? 
 
 def translate_and_rotate(f,index,x,y,rotation):
+#    f.write('C'+str(index)+' T'+str(int(x))+','+str(int(y))+
+#                ' R'+str(round(np.cos(rotation*np.pi/180)*1000))+' '+str(round(np.sin(rotation*np.pi/180)*1000))+';\n')
     f.write('C'+str(index)+' T'+str(int(x))+','+str(int(y))+
-                ' R'+str(round(np.cos(rotation*np.pi/180)*1000))+' '+str(round(np.sin(rotation*np.pi/180)*1000))+';\n')
-
+                ' R'+str(round(np.cos(rotation*np.pi/180)*2147483647))+' '+str(round(np.sin(rotation*np.pi/180)*2147483647))+';\n')
+    
 def mirror_y(f,index):
     #print('C'+str(index)+' R'+str(int(np.cos(rotation*np.pi/180)*1000))+' '+str(int(np.sin(rotation*np.pi/180)*1000))+';\n')
     f.write('C'+str(index)+' MY'+';\n')
