@@ -229,7 +229,7 @@ def draw_wire_circle(f,index,radius,thickness,layer = 1,scale_num = 1,scale_deno
         f.write(wire_str+';\n')
     f.write('DF;\n') # end subset
 
-def draw_circle(f,index,radius,layer = 1,scale_num = 1,scale_denom = 1,name  ='',num_of_points = 100):
+def draw_circle(f,index,radius,layer = 1,scale_num = 1,scale_denom = 1,name  ='',num_of_points = 256):
     index, num_index = parse_index_input(index,name)
     f.write('DS '+str(num_index)+' ' +str(scale_num)+' '+str(scale_denom)+ ';\n')
     if name != '':
