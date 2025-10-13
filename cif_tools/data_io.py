@@ -2,11 +2,13 @@
 
 from cif_tools import cif_functions as cf
 
-def load_cif(load_filename,index_dict,working_file):
+def load_cif(load_filename,index_dict,working_file,verbose = False):
     '''
     load file is the file you want to copy over into your working_file
     must have an index_dict for that working_file
-    you can have every index increased by the index_dict.index_offset
+    This will make new indexes for each subset in the loaded file
+    So indexes will not be preserved only names if they exist
+    Trying to make index_offset obsolete
     '''
     with open(load_filename, "r") as f:
         while line := f.readline():
@@ -20,7 +22,7 @@ def load_cif(load_filename,index_dict,working_file):
                     scale_num = int(split_line[2])
                     scale_denom = int(split_line[3].removesuffix(";\n"))
                     #working_file.write(line)
-                    new_line = split_line[0]+" "+str(old_index+index_dict.index_offset)+" "+split_line[2]+" "+split_line[3]
+                    new_line = split_line[0]+" "+str(index_dict.index_offset+len(index_dict.id)+1)+" "+split_line[2]+" "+split_line[3]
                     working_file.write(new_line)
                     # next line
                     line = f.readline()
@@ -30,11 +32,12 @@ def load_cif(load_filename,index_dict,working_file):
                     else: #no name     will name always be second?
                         name = "imported_from_"+load_filename[0:-3]+"index_"+str(old_index)
                     #index_dict.add_new_index(name) # this is a bit tricky we don't want to screw up the indexes of the loaded file
-                    index_dict.id[name] = old_index +index_dict.index_offset
+                    index_dict.id[name] = index_dict.index_offset+len(index_dict.id)+1#old_index +index_dict.index_offset
                     working_file.write('9 '+name+';\n')
                     while not end:
                         line = f.readline()
-                        print(line)
+                        if verbose:
+                            print(line)
                         if line[0:3] == "DF;":
                             end = True
                         working_file.write(line)
