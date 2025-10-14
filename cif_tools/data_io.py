@@ -20,7 +20,7 @@ def load_cif(load_filename,index_dict,working_file,verbose = False):
                     end = False
                     old_index = int(split_line[1])
                     scale_num = int(split_line[2])
-                    scale_denom = int(split_line[3].removesuffix(";\n"))
+                    scale_denom = int(split_line[3].removesuffix(";\n").removesuffix(";"))#sometimes has two ;;
                     #working_file.write(line)
                     new_line = split_line[0]+" "+str(index_dict.index_offset+len(index_dict.id)+1)+" "+split_line[2]+" "+split_line[3]
                     working_file.write(new_line)
