@@ -1,12 +1,17 @@
 import numpy as np
 #import matplotlib.pyplot as plt
-from cif_tools import cif_functions as cf
+#from cif_tools import cif_functions as cf
 #import cif_functions as cf
+from cif_tools.cif_functions import index_dictionary
+from cif_tools.cif_functions import CifWriter
+cf = CifWriter()
+microns = cf.microns
+nanometers = cf.nanometers
 
 # n_arc and n_grids
 
-microns = 100
-nanometers = 0.1
+#microns = 100
+#nanometers = 0.1
 
 
 
@@ -116,7 +121,8 @@ def main(filename,
     f = open(filename, file_write_mode)
 
     if ic == None:
-        ic = cf.index_dictionary()
+        #ic = cf.index_dictionary()
+        ic = index_dictionary()
         ic.index_offset = index_offset
         print("ic = None")
         
@@ -133,18 +139,18 @@ def main(filename,
     if draw_inductors: #for MLA caps
         if not(meander_inside):
             #draw vertical grid line 
-            cf.draw_rectangle(f,ic,line_width,line_length,layer = inductor_layer,scale_num = 1,name= 'vertical_line') #
+            cf.draw_rectangle(f,ic,line_width,line_length,layer = inductor_layer,name= 'vertical_line') #
             #draw horizontal grid line
-            cf.draw_rectangle(f,ic,line_length,line_width,layer = inductor_layer,scale_num = 1,name= 'horizontal_line') #
+            cf.draw_rectangle(f,ic,line_length,line_width,layer = inductor_layer,name= 'horizontal_line') #
             #draw vertical end cap 
-            cf.draw_rectangle(f,ic,line_width*2+separation_y_pol,line_width,layer = inductor_layer,scale_num = 1,name= 'vertical_line_end_cap') #
+            cf.draw_rectangle(f,ic,line_width*2+separation_y_pol,line_width,layer = inductor_layer,name= 'vertical_line_end_cap') #
 
-            cf.draw_rectangle(f,ic,line_width,line_width*2+separation_x_pol,layer = inductor_layer,scale_num = 1,name= 'horizontal_line_end_cap') #
+            cf.draw_rectangle(f,ic,line_width,line_width*2+separation_x_pol,layer = inductor_layer,name= 'horizontal_line_end_cap') #
 
             for i in range(0,len(short_centers_x)):
-                cf.draw_rectangle(f,ic,int(short_lengths_x[i]),short_width,layer = short_layer,scale_num = 1,name= 'short_x_'+str(i)) #
+                cf.draw_rectangle(f,ic,int(short_lengths_x[i]),short_width,layer = short_layer,name= 'short_x_'+str(i)) #
             for i in range(0,len(short_centers_y)):
-                cf.draw_rectangle(f,ic,short_width,int(short_lengths_y[i]),layer = short_layer,scale_num = 1,name= 'short_y_'+str(i)) #
+                cf.draw_rectangle(f,ic,short_width,int(short_lengths_y[i]),layer = short_layer,name= 'short_y_'+str(i)) #
 
 
             remainder_length_horizontal = int(grid_spacing-line_length+arc_width+(n_lines_shorted-1)*(arc_gap+arc_width))
@@ -155,10 +161,10 @@ def main(filename,
 
             #meander_remainder get center lines the rest of the way to the arcs
             #meander vertical
-            cf.draw_rectangle(f,ic,remainder_length_horizontal,line_width,layer = inductor_layer,scale_num = 1,name= 'remainder_horizontal') #
-            cf.draw_rectangle(f,ic,2*arc_width+arc_gap,arc_width,layer = inductor_layer,scale_num = 1,name= 'horizantal_short') #
-            cf.draw_rectangle(f,ic,line_width,remainder_length_vertical,layer = inductor_layer,scale_num = 1,name= 'remainder_vertical_1') #
-            cf.draw_rectangle(f,ic,line_width,remainder_length_vertical_2,layer = inductor_layer,scale_num = 1,name= 'remainder_vertical_2') #
+            cf.draw_rectangle(f,ic,remainder_length_horizontal,line_width,layer = inductor_layer,name= 'remainder_horizontal') #
+            cf.draw_rectangle(f,ic,2*arc_width+arc_gap,arc_width,layer = inductor_layer,name= 'horizantal_short') #
+            cf.draw_rectangle(f,ic,line_width,remainder_length_vertical,layer = inductor_layer,name= 'remainder_vertical_1') #
+            cf.draw_rectangle(f,ic,line_width,remainder_length_vertical_2,layer = inductor_layer,name= 'remainder_vertical_2') #
 
         horizontal_connect_meander_length = 1*meander_unit_cell_height
 
@@ -190,16 +196,16 @@ def main(filename,
         #draw arc horizontal pol bottom
         for i in range(0,n_lines_shorted):
             cf.draw_arc(f,ic,grid_spacing+i*(arc_width+arc_gap),arc_width,180+angle_to_cut_short_inside_1, # near x_pol
-                        270-angle_to_cut_short_inside_2,layer = arc_layer,scale_num = 1, # near y_pol
+                        270-angle_to_cut_short_inside_2,layer = arc_layer, # near y_pol
                         name= 'arc_horizontal_bottom_'+str(i))
         #draw arc horizontal pol top
             cf.draw_arc(f,ic,grid_spacing+i*(arc_width+arc_gap),arc_width,90+angle_to_cut_short_inside_2,180-angle_to_cut_short_inside_1,
-                        layer = arc_layer,scale_num = 1,name= 'arc_horizontal_top_'+str(i))  #
+                        layer = arc_layer,name= 'arc_horizontal_top_'+str(i))  #
 
         #draw arc vertical pol bottom
         for i in range(0,n_lines_shorted):
             cf.draw_arc(f,ic,grid_spacing+i*(line_width+arc_gap),arc_width_right,270+angle_to_cut_short_inside_3,90-angle_to_cut_short_inside_3,
-                        layer = arc_layer,scale_num = 1,name= 'arc_vertical_bottom_'+str(i))  #
+                        layer = arc_layer,name= 'arc_vertical_bottom_'+str(i))  #
 
         #####################################################################################
         #                           outside arcs
@@ -216,18 +222,18 @@ def main(filename,
 
         for i in range(n_lines_shorted,n_arcs):
             cf.draw_arc(f,ic,grid_spacing+arc_width_right*i+arc_gap*i,arc_width_right,0+angle_to_cut_short_outside_1,
-                            90+pol_angle+angle_to_cut_short_outside_3,layer = arc_layer,scale_num = 1,name= 'arc_outer_vertical_top_'+str(i))
+                            90+pol_angle+angle_to_cut_short_outside_3,layer = arc_layer,name= 'arc_outer_vertical_top_'+str(i))
             cf.draw_arc(f,ic,grid_spacing+arc_width_right*i+arc_gap*i,arc_width_right,270+pol_angle-angle_to_cut_short_outside_3,
-                            360-angle_to_cut_short_outside_1,layer = arc_layer,scale_num = 1,name= 'arc_outer_vertical_bottom_'+str(i))
+                            360-angle_to_cut_short_outside_1,layer = arc_layer,name= 'arc_outer_vertical_bottom_'+str(i))
 
 
             cf.draw_arc(f,ic,grid_spacing+arc_width*i+arc_gap*i,arc_width*1,180+angle_to_cut_short_outside_1,
-                            270+pol_angle-angle_to_cut_short_outside_2,layer = arc_layer,scale_num = 1, #near y_pol
-                            scale_denom = 1,name= 'arc_outer_horizontal_bottom_'+str(i),num_of_points = 100)
+                            270+pol_angle-angle_to_cut_short_outside_2,layer = arc_layer, #near y_pol
+                            name= 'arc_outer_horizontal_bottom_'+str(i),num_of_points = 100)
             #draw outside arc horizontal pol top
             cf.draw_arc(f,ic,grid_spacing+arc_width*i+arc_gap*i,arc_width,90+pol_angle+angle_to_cut_short_outside_2,
                             180-angle_to_cut_short_outside_1,layer = arc_layer,
-                            scale_num = 1,name= 'arc_outer_horizontal_top_'+str(i))
+                            name= 'arc_outer_horizontal_top_'+str(i))
 
 
 
@@ -235,31 +241,31 @@ def main(filename,
         #                           arc connectors
         #####################################################################################
 
-        cf.draw_rectangle(f,ic,arc_width,arc_width*4+arc_gap*3,layer = arc_layer,scale_num = 1,name= 'vertical_arc_connector') #
+        cf.draw_rectangle(f,ic,arc_width,arc_width*4+arc_gap*3,layer = arc_layer,name= 'vertical_arc_connector') #
 
         if not draw_only_inductors:
             horizontal_arc_connector_width = arc_width
-            cf.draw_rectangle(f,ic,arc_width+absorber_extension_length+capacitor_rail_width,arc_width,layer = arc_layer,scale_num = 1,name= 'horizontal_arc_connector')
-            cf.draw_rectangle(f,ic,arc_width_right+absorber_extension_length+capacitor_rail_width,arc_width_right,layer = arc_layer,scale_num = 1,name= 'horizontal_arc_connector_right')
+            cf.draw_rectangle(f,ic,arc_width+absorber_extension_length+capacitor_rail_width,arc_width,layer = arc_layer,name= 'horizontal_arc_connector')
+            cf.draw_rectangle(f,ic,arc_width_right+absorber_extension_length+capacitor_rail_width,arc_width_right,layer = arc_layer,name= 'horizontal_arc_connector_right')
 
         else: #bigger for connection to MLA
             horizontal_arc_connector_width = 5*microns
             cf.draw_rectangle(f,ic,arc_width+absorber_extension_length+capacitor_rail_width,
-                                  horizontal_arc_connector_width,layer = arc_layer,scale_num = 1,name= 'horizontal_arc_connector')
+                                  horizontal_arc_connector_width,layer = arc_layer,name= 'horizontal_arc_connector')
             cf.draw_rectangle(f,ic,arc_width_right+absorber_extension_length+capacitor_rail_width,
-                                  horizontal_arc_connector_width,layer = arc_layer,scale_num = 1,name= 'horizontal_arc_connector_right')
+                                  horizontal_arc_connector_width,layer = arc_layer,name= 'horizontal_arc_connector_right')
 
         l_double_arc_connector = arc_width_right*2*(n_lines_shorted)+arc_gap+2*arc_gap*(n_lines_shorted-1)
-        cf.draw_rectangle(f,ic,l_double_arc_connector,arc_width_right,layer = arc_layer,scale_num = 1,name= 'double_arc_connector')
-        cf.draw_rectangle(f,ic,line_width,l_double_arc_connector,layer = arc_layer,scale_num = 1,name= 'double_arc_connector_vertical')
+        cf.draw_rectangle(f,ic,l_double_arc_connector,arc_width_right,layer = arc_layer,name= 'double_arc_connector')
+        cf.draw_rectangle(f,ic,line_width,l_double_arc_connector,layer = arc_layer,name= 'double_arc_connector_vertical')
 
     if draw_only_inductors:
         cf.draw_rectangle(f,ic,int(grid_spacing*2+arc_width*2*2+arc_gap*2+absorber_extension_length*2-(2-n_arcs)*(arc_width+arc_gap)*2)+5*microns,
                               int(grid_spacing*2+arc_width*2*2+arc_gap*2+absorber_extension_length*2-(2-n_arcs)*(arc_width+arc_gap)*2)+5*microns
-                              ,layer = 2,scale_num = 1,name= 'inductor_inversion')
+                              ,layer = 2,name= 'inductor_inversion')
         cf.draw_rectangle(f,ic,int(grid_spacing*2+arc_width*2*2+arc_gap*2+absorber_extension_length*2-(2-n_arcs)*(arc_width+arc_gap)*2),
                               int(grid_spacing*2+arc_width*2*2+arc_gap*2+absorber_extension_length*2-(2-n_arcs)*(arc_width+arc_gap)*2)
-                              ,layer = 1,scale_num = 1,name= 'capacitor_inversion')
+                              ,layer = 1,name= 'capacitor_inversion')
 
     if not draw_only_inductors:
 
@@ -269,10 +275,10 @@ def main(filename,
 
         #liftoff aluminum
         liftoff_length = capacitor_rail_width*2+liftoff_gap_size
-        cf.draw_rectangle(f,ic,capacitor_rail_width,liftoff_length,layer = liftoff_layer,scale_num = 1,name= 'liftoff_aluminum')
+        cf.draw_rectangle(f,ic,capacitor_rail_width,liftoff_length,layer = liftoff_layer,name= 'liftoff_aluminum')
 
         #liftoff pad
-        cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_rail_width,layer = capacitor_connector_layer,scale_num = 1,name= 'liftoff_aluminum_pad')
+        cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_rail_width,layer = capacitor_connector_layer,name= 'liftoff_aluminum_pad')
 
 
         #####################################################################################
@@ -280,20 +286,20 @@ def main(filename,
         #####################################################################################
 
         # draw capacitor rail
-        cf.draw_rectangle(f,ic,capacitor_length+capacitor_rail_width,capacitor_rail_width,layer = capacitor_layer,scale_num = 1,name= 'capacitor_rail') #
-        cf.draw_rectangle(f,ic,capacitor_length_right+capacitor_rail_width,capacitor_rail_width,layer = capacitor_layer,scale_num = 1,name= 'capacitor_rail_right') #
+        cf.draw_rectangle(f,ic,capacitor_length+capacitor_rail_width,capacitor_rail_width,layer = capacitor_layer,name= 'capacitor_rail') #
+        cf.draw_rectangle(f,ic,capacitor_length_right+capacitor_rail_width,capacitor_rail_width,layer = capacitor_layer,name= 'capacitor_rail_right') #
 
         # capacitor end connector
         if capacitor_end_connector:
-            cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_finger_overlap+capacitor_finger_end_gap*2+capacitor_rail_width*2,layer = capacitor_layer,scale_num = 1,name= 'capacitor_end_connector') #
+            cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_finger_overlap+capacitor_finger_end_gap*2+capacitor_rail_width*2,layer = capacitor_layer,name= 'capacitor_end_connector') #
 
         # draw capacitor connector
         capacitor_connector_length = int(capacitor_finger_overlap/2+capacitor_finger_end_gap-arc_gap_two_pols/2-liftoff_gap_size)
         capacitor_connector_length_right = int(capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right-arc_gap_two_pols/2-liftoff_gap_size)
-        cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_connector_length+capacitor_offset_y,layer = capacitor_connector_layer,scale_num = 1,name= 'capacitor_connector_top') #
-        cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_connector_length-capacitor_offset_y,layer = capacitor_connector_layer,scale_num = 1,name= 'capacitor_connector_bottom') #
-        cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_connector_length_right+capacitor_offset_y,layer = capacitor_connector_layer,scale_num = 1,name= 'capacitor_connector_top_right') #
-        cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_connector_length_right-capacitor_offset_y,layer = capacitor_connector_layer,scale_num = 1,name= 'capacitor_connector_bottom_right') #
+        cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_connector_length+capacitor_offset_y,layer = capacitor_connector_layer,name= 'capacitor_connector_top') #
+        cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_connector_length-capacitor_offset_y,layer = capacitor_connector_layer,name= 'capacitor_connector_bottom') #
+        cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_connector_length_right+capacitor_offset_y,layer = capacitor_connector_layer,name= 'capacitor_connector_top_right') #
+        cf.draw_rectangle(f,ic,capacitor_rail_width,capacitor_connector_length_right-capacitor_offset_y,layer = capacitor_connector_layer,name= 'capacitor_connector_bottom_right') #
         #capacitor_finger
         capacitor_finger_length = int(capacitor_finger_overlap+capacitor_finger_end_gap+capacitor_rail_width)
 
@@ -302,8 +308,8 @@ def main(filename,
         else:
             partial_finger_size = capacitor_finger_length
 
-        cf.draw_rectangle(f,ic,capacitor_finger_width,capacitor_finger_length,layer = capacitor_layer,scale_num = 1,name= 'capacitor_finger') #
-        cf.draw_rectangle(f,ic,capacitor_finger_width,partial_finger_size,layer = capacitor_layer,scale_num = 1,name= 'capacitor_finger_partial') #
+        cf.draw_rectangle(f,ic,capacitor_finger_width,capacitor_finger_length,layer = capacitor_layer,name= 'capacitor_finger') #
+        cf.draw_rectangle(f,ic,capacitor_finger_width,partial_finger_size,layer = capacitor_layer,name= 'capacitor_finger_partial') #
         #capacitor_finger_right
         capacitor_finger_length_right = int(capacitor_finger_overlap_right+capacitor_finger_end_gap_right+capacitor_rail_width)
         if number_of_fingers_right != int(number_of_fingers_right):
@@ -311,18 +317,19 @@ def main(filename,
         else:
             partial_finger_size_right = capacitor_finger_length_right
 
-        cf.draw_rectangle(f,ic,capacitor_finger_width_right,capacitor_finger_length_right,layer = capacitor_layer,scale_num = 1,name= 'capacitor_finger_right') #
-        cf.draw_rectangle(f,ic,capacitor_finger_width_right,partial_finger_size_right,layer = capacitor_layer,scale_num = 1,name= 'capacitor_finger_partial_right') #
+        cf.draw_rectangle(f,ic,capacitor_finger_width_right,capacitor_finger_length_right,layer = capacitor_layer,name= 'capacitor_finger_right') #
+        cf.draw_rectangle(f,ic,capacitor_finger_width_right,partial_finger_size_right,layer = capacitor_layer,name= 'capacitor_finger_partial_right') #
         #coupling capacitor_finger
-        cf.draw_rectangle(f,ic,coupling_capacitor_finger_width,length_of_coupling_fingers+coupling_capacitor_rail_width,layer = capacitor_layer,scale_num = 1,name= 'coupling_capacitor_finger') #
+        cf.draw_rectangle(f,ic,coupling_capacitor_finger_width,length_of_coupling_fingers+coupling_capacitor_rail_width,layer = capacitor_layer,name= 'coupling_capacitor_finger') #
         #coupling capacitor_finger
-        cf.draw_rectangle(f,ic,coupling_capacitor_finger_width_right,length_of_coupling_fingers+coupling_capacitor_rail_width,layer = capacitor_layer,scale_num = 1,name= 'coupling_capacitor_finger_right') #
+        cf.draw_rectangle(f,ic,coupling_capacitor_finger_width_right,length_of_coupling_fingers+coupling_capacitor_rail_width,layer = capacitor_layer,name= 'coupling_capacitor_finger_right') #
         #coupling connector
         coupler_connector_width = int(number_of_coupling_fingers*coupling_capacitor_finger_width*2-coupling_capacitor_finger_width)
-        cf.draw_rectangle(f,ic,coupler_connector_width,coupling_capacitor_rail_width,layer = capacitor_layer,scale_num = 1,name= 'coupling_capacitor_connector') #
+        print("coupler_connector_width",coupler_connector_width)
+        cf.draw_rectangle(f,ic,coupler_connector_width,coupling_capacitor_rail_width,layer = capacitor_layer,name= 'coupling_capacitor_connector') #
         #coupling connector right
         coupler_connector_width_right = int(number_of_coupling_fingers_right*coupling_capacitor_finger_width_right*2-coupling_capacitor_finger_width_right)
-        cf.draw_rectangle(f,ic,coupler_connector_width_right,coupling_capacitor_rail_width,layer = capacitor_layer,scale_num = 1,name= 'coupling_capacitor_connector_right') #
+        cf.draw_rectangle(f,ic,coupler_connector_width_right,coupling_capacitor_rail_width,layer = capacitor_layer,name= 'coupling_capacitor_connector_right') #
         # draw capacitor connector_horizontal
         if coupling_cap_loc == "inner":
             #coupling_capacitor_connector_inner_length = int(grid_spacing-feedline_width)
@@ -341,16 +348,16 @@ def main(filename,
         coupling_connector_length_vertical = int(np.abs((feedline_y_location-feedline_width/2)-(capacitor_finger_overlap/2+capacitor_finger_end_gap+length_of_coupling_fingers+coupling_capacitor_finger_end_gap+capacitor_rail_width*1+coupling_capacitor_rail_width*2+capacitor_to_coupling_capacitor_gap+capacitor_offset_y)+0.1*microns))
 
         print("copuling_connector_length_vertical",coupling_connector_length_vertical)
-        cf.draw_rectangle(f,ic,coupling_capacitor_rail_width,coupling_connector_length_vertical,layer = feedline_layer,scale_num = 1,name= 'coupling_capacitor_connector_vertical')
+        cf.draw_rectangle(f,ic,coupling_capacitor_rail_width,coupling_connector_length_vertical,layer = feedline_layer,name= 'coupling_capacitor_connector_vertical')
         # draw leg to coupling capacitor
-        cf.draw_rectangle(f,ic,capacitor_rail_width,int(np.abs(capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+capacitor_rail_width)),layer = capacitor_layer,scale_num = 1,name= 'capacitor_to_coupling_capacitor_connector') #
+        cf.draw_rectangle(f,ic,capacitor_rail_width,int(np.abs(capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+capacitor_rail_width)),layer = capacitor_layer,name= 'capacitor_to_coupling_capacitor_connector') #
 
         #####################################################################################
         #                            feedline shapes
         #####################################################################################
-        cf.draw_rectangle(f,ic,int(pixel_size+feedline_delta*2),feedline_width,layer = feedline_layer,scale_num = 1,name= 'feedline') #
+        cf.draw_rectangle(f,ic,int(pixel_size+feedline_delta*2),feedline_width,layer = feedline_layer,name= 'feedline') #
         if vertical_feedline:
-            cf.draw_rectangle(f,ic,feedline_width,int(pixel_size*np.sqrt(3)/2+feedline_delta*2),layer = feedline_layer,scale_num = 1,name= 'feedline_vertical') #
+            cf.draw_rectangle(f,ic,feedline_width,int(pixel_size*np.sqrt(3)/2+feedline_delta*2),layer = feedline_layer,name= 'feedline_vertical') #
 
 
         #####################################################################################
@@ -358,16 +365,16 @@ def main(filename,
         #####################################################################################
 
 
-        cf.draw_rectangle(f,ic,pixel_size,int(pixel_size*np.sqrt(3)/2),layer = 3,scale_num = 1,name= 'pixel_size') #
-        cf.draw_arc(f,ic,choke_radius,choke_outer_width,0,360,layer = 10,scale_num = 1,name= 'choke_radius') #
+        cf.draw_rectangle(f,ic,pixel_size,int(pixel_size*np.sqrt(3)/2),layer = 3,name= 'pixel_size') #
+        cf.draw_arc(f,ic,choke_radius,choke_outer_width,0,360,layer = 10,name= 'choke_radius') #
         cf.draw_arc(f,ic,int(guide_radius*guide_flare_factor),
-                        choke_start_radius-int(guide_radius*guide_flare_factor),0,360,layer = 10,scale_num = 1,name= 'choke_inner_radius') #
-        cf.draw_circle(f,ic,int(guide_radius),layer = 11,scale_num = 1,name= 'guide_radius')
+                        choke_start_radius-int(guide_radius*guide_flare_factor),0,360,layer = 10,name= 'choke_inner_radius') #
+        cf.draw_circle(f,ic,int(guide_radius),layer = 11,name= 'guide_radius')
         #cf.draw_rectangle(f,ic,int(grid_spacing*2+arc_width*2*2+arc_gap*2*2+capacitor_rail_width*2+np.min((capacitor_finger_width,capacitor_finger_width_right))),
-        #                      int(arc_gap+capacitor_connector_length*2+liftoff_gap_size),layer = 1,scale_num = 1,name= 'inductor_border_etch')
+        #                      int(arc_gap+capacitor_connector_length*2+liftoff_gap_size),layer = 1,name= 'inductor_border_etch')
         cf.draw_rectangle(f,ic,int(grid_spacing*2+arc_width*2*2+arc_gap*2+absorber_extension_length*2-(2-n_arcs)*(arc_width+arc_gap)*2)-5*microns,
                               int(grid_spacing*2+arc_width*2*2+arc_gap*2+absorber_extension_length*2-(2-n_arcs)*(arc_width+arc_gap)*2)-5*microns
-                              ,layer = 1,scale_num = 1,name= 'inductor_border_etch')
+                              ,layer = 1,name= 'inductor_border_etch')
 
 
         #-grid_spacing-arc_width*2-arc_gap-capacitor_rail_width/2-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap)
@@ -380,7 +387,7 @@ def main(filename,
         else:
             inductor_trench_y = 2*choke_radius+ 2*choke_outer_width+20*microns
         cf.draw_rectangle(f,ic,(grid_spacing+arc_width*2+arc_gap+absorber_extension_length+capacitor_rail_width)*2-2*(2-n_arcs)*(arc_width+arc_gap),inductor_trench_y+10*microns,
-                              layer = 6,scale_num = 1,name= 'inductor_trench') #
+                              layer = 6,name= 'inductor_trench') #
         if capacitor_end_connector:
             capacitor_trench_x = capacitor_length+capacitor_rail_width
             capacitor_trench_x_right = capacitor_length_right+capacitor_rail_width
@@ -393,8 +400,8 @@ def main(filename,
             capacitor_trench_y = capacitor_width+coupling_capacitor_rail_width*4+\
           capacitor_to_coupling_capacitor_gap*2+length_of_coupling_fingers*2+coupling_capacitor_finger_end_gap*2#+100*microns
 
-        cf.draw_rectangle(f,ic,capacitor_trench_x+10*microns,capacitor_trench_y+10*microns,layer = 6,scale_num = 1,name= 'capacitor_trench') #
-        cf.draw_rectangle(f,ic,capacitor_trench_x_right+10*microns,capacitor_trench_y+10*microns,layer = 6,scale_num = 1,name= 'capacitor_trench_right') #
+        cf.draw_rectangle(f,ic,capacitor_trench_x+10*microns,capacitor_trench_y+10*microns,layer = 6,name= 'capacitor_trench') #
+        cf.draw_rectangle(f,ic,capacitor_trench_x_right+10*microns,capacitor_trench_y+10*microns,layer = 6,name= 'capacitor_trench_right') #
 
     if draw_inductors:
         if meander_inside: # for meandered aluminum (might be broken now)
@@ -404,11 +411,11 @@ def main(filename,
             #####################################################################################
 
             #meander horizontal
-            cf.draw_rectangle(f,ic,meander_length,line_width,layer = inductor_layer,scale_num = 1,name= 'meander_horizontal') #
+            cf.draw_rectangle(f,ic,meander_length,line_width,layer = inductor_layer,name= 'meander_horizontal') #
             #meander vertical
-            cf.draw_rectangle(f,ic,line_width,meander_height,layer = inductor_layer,scale_num = 1,name= 'meander_vertical') #
+            cf.draw_rectangle(f,ic,line_width,meander_height,layer = inductor_layer,name= 'meander_vertical') #
             #meander vertical_2
-            cf.draw_rectangle(f,ic,line_width,int(np.ceil(meander_height/2)+20*nanometers),layer = inductor_layer,scale_num = 1,name= 'meander_vertical_2') #
+            cf.draw_rectangle(f,ic,line_width,int(np.ceil(meander_height/2)+20*nanometers),layer = inductor_layer,name= 'meander_vertical_2') #
 
 
             number_of_meanders = int(np.floor((line_length-min_end_meander_length*2)/meander_unit_cell_height))
@@ -423,9 +430,9 @@ def main(filename,
 
             #meander_remainder
             #meander vertical
-            cf.draw_rectangle(f,ic,remainder_length_horizontal,line_width,layer = inductor_layer,scale_num = 1,name= 'remainder_horizontal') #
-            cf.draw_rectangle(f,ic,line_width,remainder_length_vertical,layer = inductor_layer,scale_num = 1,name= 'remainder_vertical_1') #
-            cf.draw_rectangle(f,ic,line_width,remainder_length_vertical_2,layer = inductor_layer,scale_num = 1,name= 'remainder_vertical_2') #
+            cf.draw_rectangle(f,ic,remainder_length_horizontal,line_width,layer = inductor_layer,name= 'remainder_horizontal') #
+            cf.draw_rectangle(f,ic,line_width,remainder_length_vertical,layer = inductor_layer,name= 'remainder_vertical_1') #
+            cf.draw_rectangle(f,ic,line_width,remainder_length_vertical_2,layer = inductor_layer,name= 'remainder_vertical_2') #
 
             #####################################################################################
             #                            draw unit meander 
@@ -747,6 +754,169 @@ def main(filename,
 
         cf.end_subset(f)
 
+#####################################################################################
+#                        coupling capacitor
+#####################################################################################
+    #print("**********************",number_of_coupling_fingers//2,"**********************")
+    #print("**********************",number_of_coupling_fingers_right//2,"**********************")
+    # left
+    if coupling_cap_loc == 'inner':
+        cap_adjust = 0
+        cap_connector_adjust = 0
+        cap_finger_adjust = coupling_capacitor_finger_width-capacitor_rail_width*2
+        cap_vertical_adjust = coupler_connector_width
+        cap_vertical_adjust_right = coupler_connector_width_right
+    else:
+        cap_adjust = 0
+        cap_connector_adjust = 0
+        cap_finger_adjust = 0
+        cap_vertical_adjust = 0
+        cap_vertical_adjust_right = 0
+    cf.start_subset(f,ic,subset_name = 'coupling_capacitor')
+
+
+    if draw_left:
+        if coupling_cap_loc == 'inner':
+            start_loc = -feedline_width-coupling_capacitor_finger_width*5/2+coupling_capacitor_rail_width
+            coupling_cap_y_loc = capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+\
+                capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2
+            for i in range(0,number_of_coupling_fingers//2):
+                cf.translate(f,ic.lookup('coupling_capacitor_finger'),
+                                    start_loc-coupling_capacitor_finger_width*4*i,
+                                    coupling_cap_y_loc-coupling_capacitor_rail_width/2)
+                cf.translate(f,ic.lookup('coupling_capacitor_finger'),
+                                    start_loc-coupling_capacitor_finger_width*4*i+coupling_capacitor_finger_width*2,
+                                    coupling_cap_y_loc+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
+            if  np.mod(number_of_coupling_fingers,2) == 1:
+                i = i+1
+                cf.translate(f,ic.lookup('coupling_capacitor_finger'),
+                                    start_loc-coupling_capacitor_finger_width*4*i+coupling_capacitor_finger_width*2,
+                                    coupling_cap_y_loc+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
+
+        else:
+            for i in range(0,number_of_coupling_fingers//2):
+                cf.translate(f,ic.lookup('coupling_capacitor_finger'),
+                                    -grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width*5/2-coupling_capacitor_finger_width*4*i+(2-n_arcs)*(arc_width+arc_gap)-cap_adjust-cap_finger_adjust,
+                                    capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
+                cf.translate(f,ic.lookup('coupling_capacitor_finger'),
+                                    -grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width*5/2-coupling_capacitor_finger_width*4*i+coupling_capacitor_finger_width*2+(2-n_arcs)*(arc_width+arc_gap)-cap_adjust-cap_finger_adjust,
+                                    capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2-coupling_capacitor_rail_width/2)
+            if  np.mod(number_of_coupling_fingers,2) == 1:
+                #print('odd')
+                i = i+1
+                cf.translate(f,ic.lookup('coupling_capacitor_finger'),-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width*5/2-coupling_capacitor_finger_width*4*i+coupling_capacitor_finger_width*2+(2-n_arcs)*(arc_width+arc_gap)-cap_adjust-cap_finger_adjust,
+                                    capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2+coupling_capacitor_rail_width/2)
+
+
+
+
+    if draw_right:
+        if coupling_cap_loc == 'inner':
+            start_loc = -coupling_capacitor_finger_width_right*5/2+coupling_capacitor_rail_width
+            coupling_cap_y_loc = capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+\
+                capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2
+            for i in range(0,number_of_coupling_fingers_right//2):
+                cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
+                                    -(start_loc-coupling_capacitor_finger_width_right*4*i),
+                                    coupling_cap_y_loc-coupling_capacitor_rail_width/2)
+                cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
+                                    -(start_loc-coupling_capacitor_finger_width_right*4*i+coupling_capacitor_finger_width*2),
+                                    coupling_cap_y_loc+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
+            if  np.mod(number_of_coupling_fingers_right,2) == 1:
+                #print('odd')
+                i = i+1
+                cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
+                                    -(start_loc-coupling_capacitor_finger_width_right*4*i+coupling_capacitor_finger_width*2),
+                                    coupling_cap_y_loc+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
+        else:
+            for i in range(0,number_of_coupling_fingers_right//2):
+                cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
+                                -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width_right*5/2-coupling_capacitor_finger_width_right*4*i+(2-n_arcs)*(arc_width+arc_gap))+cap_adjust+cap_finger_adjust,
+                                capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
+                cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
+                                -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width_right*5/2-coupling_capacitor_finger_width_right*4*i+coupling_capacitor_finger_width_right*2+(2-n_arcs)*(arc_width+arc_gap))+cap_adjust+cap_finger_adjust,
+                                capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2-coupling_capacitor_rail_width/2)
+            if  np.mod(number_of_coupling_fingers_right,2) == 1:
+            #print('odd')
+                i = i+1
+                cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
+                                -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width_right*5/2-coupling_capacitor_finger_width_right*4*i+coupling_capacitor_finger_width_right*2+(2-n_arcs)*(arc_width+arc_gap))+cap_adjust+cap_finger_adjust,
+                                capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2-coupling_capacitor_rail_width/2)
+
+    # left
+    cap_to_coupling_capacitor_rail_loc = -grid_spacing-arc_width*2-arc_gap-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap)+cap_connector_adjust
+    bottom_coupling_cap_rail_loc = capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+\
+            capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width/2
+    top_coupling_cap_rail_loc = bottom_coupling_cap_rail_loc +length_of_coupling_fingers+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width
+
+    if draw_left:
+        cf.translate(f,ic.lookup('capacitor_to_coupling_capacitor_connector'),
+                            cap_to_coupling_capacitor_rail_loc-capacitor_rail_width/2,
+                            capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap/2)
+        if coupling_cap_loc == 'inner':
+            cf.translate(f,ic.lookup('coupling_capacitor_connector'),
+                                -feedline_width/2-coupler_connector_width/2-feedline_width/2+coupling_capacitor_rail_width-coupling_capacitor_finger_width*2,
+                                bottom_coupling_cap_rail_loc)
+            cf.translate(f,ic.lookup('coupling_capacitor_connector'),
+                                -feedline_width/2-coupler_connector_width/2-feedline_width/2+coupling_capacitor_rail_width,
+                            top_coupling_cap_rail_loc)
+            cf.translate(f,ic.lookup('coupling_capacitor_connector_vertical'),-feedline_width/2+coupling_capacitor_rail_width/2-feedline_width/2,
+                            capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+4*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap+coupling_connector_length_vertical/2)
+            cf.translate(f,ic.lookup('coupling_capacitor_connector_inner'),
+                                cap_to_coupling_capacitor_rail_loc+coupling_capacitor_connector_inner_length/2-capacitor_rail_width,
+                            bottom_coupling_cap_rail_loc)
+
+        else:
+            cf.translate(f,ic.lookup('coupling_capacitor_connector'),-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupler_connector_width/2+(2-n_arcs)*(arc_width+arc_gap)+cap_adjust,
+                            capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width/2)
+            cf.translate(f,ic.lookup('coupling_capacitor_connector'),-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupler_connector_width/2+(2-n_arcs)*(arc_width+arc_gap)+cap_adjust,
+                            capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+3*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap)
+            cf.translate(f,ic.lookup('coupling_capacitor_connector_vertical'),-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-capacitor_rail_width/2+(2-n_arcs)*(arc_width+arc_gap)+cap_vertical_adjust,
+                            capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+4*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap+coupling_connector_length_vertical/2)
+
+
+
+    # right
+    if draw_right:
+        cf.translate(f,ic.lookup('capacitor_to_coupling_capacitor_connector'),
+                            -(cap_to_coupling_capacitor_rail_loc-capacitor_rail_width/2)+cap_connector_adjust,
+                            capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap/2)
+        if coupling_cap_loc == 'inner':
+            cf.translate(f,ic.lookup('coupling_capacitor_connector_right'),
+                                -coupling_capacitor_rail_width+coupler_connector_width_right/2+coupling_capacitor_finger_width*2,
+                            bottom_coupling_cap_rail_loc)
+            cf.translate(f,ic.lookup('coupling_capacitor_connector_right'),
+                                -coupling_capacitor_rail_width+coupler_connector_width_right/2,
+                            top_coupling_cap_rail_loc)
+
+            cf.translate(f,ic.lookup('coupling_capacitor_connector_vertical'),
+                                feedline_width/2-coupling_capacitor_rail_width/2-feedline_width/2,
+                            capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+4*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap+coupling_connector_length_vertical/2)
+            cf.translate(f,ic.lookup('coupling_capacitor_connector_inner_right'),-(cap_to_coupling_capacitor_rail_loc+coupling_capacitor_connector_inner_length_right/2-capacitor_rail_width),
+                            bottom_coupling_cap_rail_loc)
+
+        else:
+            cf.translate(f,ic.lookup('coupling_capacitor_connector_right'),
+                                -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupler_connector_width_right/2+(2-n_arcs)*(arc_width+arc_gap))-cap_adjust,
+                            capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width/2)
+            cf.translate(f,ic.lookup('coupling_capacitor_connector_right'),
+                                -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupler_connector_width_right/2+(2-n_arcs)*(arc_width+arc_gap))-cap_adjust,
+                            capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+3*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap)
+            cf.translate(f,ic.lookup('coupling_capacitor_connector_vertical'),
+                                -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-capacitor_rail_width/2+(2-n_arcs)*(arc_width+arc_gap))-cap_vertical_adjust_right,
+                            capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+4*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap+coupling_connector_length_vertical/2)
+
+
+
+    cf.end_subset(f)
+
+    if draw_bottom_coupling_cap:
+        cf.start_subset(f,ic,subset_name = 'coupling_capacitor_mirror_y')
+        cf.mirror_y(f,ic.lookup('coupling_capacitor'))
+        cf.end_subset(f)
+        cf.translate(f,ic.lookup('coupling_capacitor_mirror_y'),0,capacitor_offset_y*2)    
+
+
     if ic.appendix_name != '':
         ic.appendix_name = '' #dont want pixel name to have appendix
         cf.start_subset(f,ic,subset_name = pixel_name)
@@ -938,6 +1108,7 @@ def main(filename,
                 print("Volume:            %.2f um^3" % (V))        
                 freq = 1/2./np.pi/np.sqrt(L*cap)
                 print("frequency:         %.2f MHz" % (freq/10**6))
+                print("Resonator Impedance:    %.2f Ohms" % (np.sqrt(L/cap)))
             if draw_right:
                 print("")
                 print("Right Resonator:")
@@ -963,7 +1134,7 @@ def main(filename,
                 print("Volume:            %.2f um^3" % (V))  
                 freq = 1/2./np.pi/np.sqrt(L*cap)
                 print("frequency:         %.2f MHz" % (freq/10**6))
-
+                print("Resonator Impedance:    %.2f Ohms" % (np.sqrt(L/cap)))
                 #freq = 1/2./np.pi/np.sqrt(L*10**-9*cap)
                 #print("frequency: %.2f MHz" % (freq/10**6))
                 #Q = 40000
@@ -1013,168 +1184,7 @@ def main(filename,
                     cf.translate(f,ic.lookup('capacitor_finger_partial_right'),-(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-capacitor_rail_width-capacitor_finger_width_right*1/2-capacitor_finger_width_right*2*i-capacitor_finger_start_gap+(2-n_arcs)*(arc_width+arc_gap)),
                                      +capacitor_finger_end_gap_right/2+capacitor_rail_width/2+capacitor_offset_y+(capacitor_finger_length_right-partial_finger_size_right)/2)
 
-        #####################################################################################
-        #                        coupling capacitor
-        #####################################################################################
-            #print("**********************",number_of_coupling_fingers//2,"**********************")
-            #print("**********************",number_of_coupling_fingers_right//2,"**********************")
-            # left
-            if coupling_cap_loc == 'inner':
-                cap_adjust = 0
-                cap_connector_adjust = 0
-                cap_finger_adjust = coupling_capacitor_finger_width-capacitor_rail_width*2
-                cap_vertical_adjust = coupler_connector_width
-                cap_vertical_adjust_right = coupler_connector_width_right
-            else:
-                cap_adjust = 0
-                cap_connector_adjust = 0
-                cap_finger_adjust = 0
-                cap_vertical_adjust = 0
-                cap_vertical_adjust_right = 0
-            cf.start_subset(f,ic,subset_name = 'coupling_capacitor')
-
-
-            if draw_left:
-                if coupling_cap_loc == 'inner':
-                    start_loc = -feedline_width-coupling_capacitor_finger_width*5/2+coupling_capacitor_rail_width
-                    coupling_cap_y_loc = capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+\
-                      capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2
-                    for i in range(0,number_of_coupling_fingers//2):
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger'),
-                                         start_loc-coupling_capacitor_finger_width*4*i,
-                                         coupling_cap_y_loc-coupling_capacitor_rail_width/2)
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger'),
-                                         start_loc-coupling_capacitor_finger_width*4*i+coupling_capacitor_finger_width*2,
-                                         coupling_cap_y_loc+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
-                    if  np.mod(number_of_coupling_fingers,2) == 1:
-                        i = i+1
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger'),
-                                         start_loc-coupling_capacitor_finger_width*4*i+coupling_capacitor_finger_width*2,
-                                         coupling_cap_y_loc+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
-
-                else:
-                    for i in range(0,number_of_coupling_fingers//2):
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger'),
-                                         -grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width*5/2-coupling_capacitor_finger_width*4*i+(2-n_arcs)*(arc_width+arc_gap)-cap_adjust-cap_finger_adjust,
-                                         capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger'),
-                                         -grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width*5/2-coupling_capacitor_finger_width*4*i+coupling_capacitor_finger_width*2+(2-n_arcs)*(arc_width+arc_gap)-cap_adjust-cap_finger_adjust,
-                                         capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2-coupling_capacitor_rail_width/2)
-                    if  np.mod(number_of_coupling_fingers,2) == 1:
-                        #print('odd')
-                        i = i+1
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger'),-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width*5/2-coupling_capacitor_finger_width*4*i+coupling_capacitor_finger_width*2+(2-n_arcs)*(arc_width+arc_gap)-cap_adjust-cap_finger_adjust,
-                                         capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2+coupling_capacitor_rail_width/2)
-
-
-
-
-            if draw_right:
-                if coupling_cap_loc == 'inner':
-                    start_loc = -coupling_capacitor_finger_width_right*5/2+coupling_capacitor_rail_width
-                    coupling_cap_y_loc = capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+\
-                      capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2
-                    for i in range(0,number_of_coupling_fingers_right//2):
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
-                                         -(start_loc-coupling_capacitor_finger_width_right*4*i),
-                                         coupling_cap_y_loc-coupling_capacitor_rail_width/2)
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
-                                         -(start_loc-coupling_capacitor_finger_width_right*4*i+coupling_capacitor_finger_width*2),
-                                         coupling_cap_y_loc+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
-                    if  np.mod(number_of_coupling_fingers_right,2) == 1:
-                        #print('odd')
-                        i = i+1
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
-                                         -(start_loc-coupling_capacitor_finger_width_right*4*i+coupling_capacitor_finger_width*2),
-                                         coupling_cap_y_loc+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
-                else:
-                    for i in range(0,number_of_coupling_fingers_right//2):
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
-                                     -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width_right*5/2-coupling_capacitor_finger_width_right*4*i+(2-n_arcs)*(arc_width+arc_gap))+cap_adjust+cap_finger_adjust,
-                                     capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width/2)
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
-                                     -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width_right*5/2-coupling_capacitor_finger_width_right*4*i+coupling_capacitor_finger_width_right*2+(2-n_arcs)*(arc_width+arc_gap))+cap_adjust+cap_finger_adjust,
-                                     capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2-coupling_capacitor_rail_width/2)
-                    if  np.mod(number_of_coupling_fingers_right,2) == 1:
-                    #print('odd')
-                        i = i+1
-                        cf.translate(f,ic.lookup('coupling_capacitor_finger_right'),
-                                     -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupling_capacitor_finger_width_right*5/2-coupling_capacitor_finger_width_right*4*i+coupling_capacitor_finger_width_right*2+(2-n_arcs)*(arc_width+arc_gap))+cap_adjust+cap_finger_adjust,
-                                     capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width+length_of_coupling_fingers/2-coupling_capacitor_rail_width/2)
-
-            # left
-            cap_to_coupling_capacitor_rail_loc = -grid_spacing-arc_width*2-arc_gap-absorber_extension_length+(2-n_arcs)*(arc_width+arc_gap)+cap_connector_adjust
-            bottom_coupling_cap_rail_loc = capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+\
-                  capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width/2
-            top_coupling_cap_rail_loc = bottom_coupling_cap_rail_loc +length_of_coupling_fingers+coupling_capacitor_finger_end_gap+coupling_capacitor_rail_width
-
-            if draw_left:
-                cf.translate(f,ic.lookup('capacitor_to_coupling_capacitor_connector'),
-                                 cap_to_coupling_capacitor_rail_loc-capacitor_rail_width/2,
-                                 capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap/2)
-                if coupling_cap_loc == 'inner':
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector'),
-                                     -feedline_width/2-coupler_connector_width/2-feedline_width/2+coupling_capacitor_rail_width-coupling_capacitor_finger_width*2,
-                                     bottom_coupling_cap_rail_loc)
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector'),
-                                     -feedline_width/2-coupler_connector_width/2-feedline_width/2+coupling_capacitor_rail_width,
-                                 top_coupling_cap_rail_loc)
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector_vertical'),-feedline_width/2+coupling_capacitor_rail_width/2-feedline_width/2,
-                                 capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+4*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap+coupling_connector_length_vertical/2)
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector_inner'),
-                                     cap_to_coupling_capacitor_rail_loc+coupling_capacitor_connector_inner_length/2-capacitor_rail_width,
-                                 bottom_coupling_cap_rail_loc)
-
-                else:
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector'),-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupler_connector_width/2+(2-n_arcs)*(arc_width+arc_gap)+cap_adjust,
-                                 capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width/2)
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector'),-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupler_connector_width/2+(2-n_arcs)*(arc_width+arc_gap)+cap_adjust,
-                                 capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+3*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap)
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector_vertical'),-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-capacitor_rail_width/2+(2-n_arcs)*(arc_width+arc_gap)+cap_vertical_adjust,
-                                 capacitor_finger_overlap/2+capacitor_finger_end_gap+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+4*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap+coupling_connector_length_vertical/2)
-
-
-
-            # right
-            if draw_right:
-                cf.translate(f,ic.lookup('capacitor_to_coupling_capacitor_connector'),
-                                 -(cap_to_coupling_capacitor_rail_loc-capacitor_rail_width/2)+cap_connector_adjust,
-                                 capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap/2)
-                if coupling_cap_loc == 'inner':
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector_right'),
-                                     -coupling_capacitor_rail_width+coupler_connector_width_right/2+coupling_capacitor_finger_width*2,
-                                 bottom_coupling_cap_rail_loc)
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector_right'),
-                                     -coupling_capacitor_rail_width+coupler_connector_width_right/2,
-                                 top_coupling_cap_rail_loc)
-
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector_vertical'),
-                                     feedline_width/2-coupling_capacitor_rail_width/2-feedline_width/2,
-                                 capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+4*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap+coupling_connector_length_vertical/2)
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector_inner_right'),-(cap_to_coupling_capacitor_rail_loc+coupling_capacitor_connector_inner_length_right/2-capacitor_rail_width),
-                                 bottom_coupling_cap_rail_loc)
-
-                else:
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector_right'),
-                                     -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupler_connector_width_right/2+(2-n_arcs)*(arc_width+arc_gap))-cap_adjust,
-                                 capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+coupling_capacitor_rail_width/2)
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector_right'),
-                                     -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-coupler_connector_width_right/2+(2-n_arcs)*(arc_width+arc_gap))-cap_adjust,
-                                 capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+3*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap)
-                    cf.translate(f,ic.lookup('coupling_capacitor_connector_vertical'),
-                                     -(-grid_spacing-arc_width*2-arc_gap-absorber_extension_length-capacitor_rail_width/2+(2-n_arcs)*(arc_width+arc_gap))-cap_vertical_adjust_right,
-                                 capacitor_finger_overlap_right/2+capacitor_finger_end_gap_right+capacitor_rail_width+capacitor_offset_y+capacitor_to_coupling_capacitor_gap+4*coupling_capacitor_rail_width/2+length_of_coupling_fingers+coupling_capacitor_finger_end_gap+coupling_connector_length_vertical/2)
-
-
-
-            cf.end_subset(f)
-
-            if draw_bottom_coupling_cap:
-                cf.start_subset(f,ic,subset_name = 'coupling_capacitor_mirror_y')
-                cf.mirror_y(f,ic.lookup('coupling_capacitor'))
-                cf.end_subset(f)
-                cf.translate(f,ic.lookup('coupling_capacitor_mirror_y'),0,capacitor_offset_y*2)    
-
+        
 
 
             cf.translate(f,ic.lookup('coupling_capacitor'),0,0)
@@ -1246,7 +1256,7 @@ def main(filename,
 
 if __name__ == "__main__":
     #filename = "multi-octave_polekid.cif"
-    filename = "24-03-11_Random_Shorted_polekid.cif"
+    filename = "polekid.cif"
     main(filename)
 
 
