@@ -273,6 +273,139 @@ class CifWriter():
 
             #f.write(wire_str+';\n')
         f.write('DF;\n') # end subset
+
+
+
+    def draw_microstrip_bend(self,f,index,width,x,y,miter = 0,connect = 'x',layer = 1,name  =''):
+        # for now you start with a y connection and go to x
+        x1 = x[0]
+        y1 = y[0]
+        x2 = x[1]
+        y2 = y[1]
+        index, num_index = self.parse_index_input(index,name)
+        f.write('DS '+str(num_index)+' ' +str(self.scale_num)+' '+str(self.scale_denom)+ ';\n')
+        if name != '':
+            f.write('9 ' + name + ' ;\n')
+        if isinstance(layer,list): # want to be able to put object in multiple layers
+            layers = layer
+        else:
+            layers = []
+            layers.append(layer)
+        for layer in layers:
+            f.write('L L'+str(layer)+'D0;;\n') #layer 5
+            poly_str = 'P'+' '
+            if connect == 'x':
+                if y2>y1:
+                    # this is x1>x2
+                    if x1>x2:
+                        poly_str += str(int(x1+width/2))+','+str(int(y1))+' '
+                        poly_str += str(int(x1+width/2))+','+str(int(y2+width/2-miter))+' '
+                        poly_str += str(int(x1+width/2-miter))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x1-width/2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x1-width/2))+','+str(int(y1))+' '
+                    else:
+                        poly_str += str(int(x1-width/2))+','+str(int(y1))+' '
+                        poly_str += str(int(x1-width/2))+','+str(int(y2+width/2-miter))+' '
+                        poly_str += str(int(x1-width/2+miter))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x1+width/2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x1+width/2))+','+str(int(y1))+' '
+                else:
+                    # this is x1>x2
+                    if x2>x1:  
+                        poly_str += str(int(x1-width/2))+','+str(int(y1))+' '
+                        poly_str += str(int(x1-width/2))+','+str(int(y2-width/2+miter))+' '
+                        poly_str += str(int(x1-width/2+miter))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x1+width/2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x1+width/2))+','+str(int(y1))+' '
+                    else: #this bottom right apperantly 
+                        poly_str += str(int(x1+width/2))+','+str(int(y1))+' '
+                        poly_str += str(int(x1+width/2))+','+str(int(y2-width/2+miter))+' '
+                        poly_str += str(int(x1+width/2-miter))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x1-width/2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x1-width/2))+','+str(int(y1))+' '
+            f.write(poly_str+';\n')
+        f.write('DF;\n') # end subset
+        
+    
+
+
+    def draw_microstrip_jog(self,f,index,width,x,y,miter = 0,connect = 'x',layer = 1,name  =''):
+        x1 = x[0]
+        y1 = y[0]
+        x2 = x[1]
+        y2 = y[1]
+        index, num_index = self.parse_index_input(index,name)
+        f.write('DS '+str(num_index)+' ' +str(self.scale_num)+' '+str(self.scale_denom)+ ';\n')
+        if name != '':
+            f.write('9 ' + name + ' ;\n')
+        if isinstance(layer,list): # want to be able to put object in multiple layers
+            layers = layer
+        else:
+            layers = []
+            layers.append(layer)
+        for layer in layers:
+            f.write('L L'+str(layer)+'D0;;\n') #layer 5
+            poly_str = 'P'+' '
+            if connect == 'x':
+                if y2>y1:
+                    # this is x1>x2
+                    if x1>x2:
+                        poly_str += str(int(x1))+','+str(int(y1-width/2))+' '
+                        poly_str += str(int((x1+x2)/2-width/2+miter))+','+str(int(y1-width/2))+' '
+                        poly_str += str(int((x1+x2)/2-width/2))+','+str(int(y1-width/2+miter))+' '
+                        poly_str += str(int((x1+x2)/2-width/2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int((x1+x2)/2+width/2-miter))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int((x1+x2)/2+width/2))+','+str(int(y2+width/2-miter))+' '
+                        poly_str += str(int((x1+x2)/2+width/2))+','+str(int(y1+width/2))+' '
+                        poly_str += str(int(x1))+','+str(int(y1+width/2))+' '
+                    else:
+                        poly_str += str(int(x1))+','+str(int(y1-width/2))+' '
+                        poly_str += str(int((x1+x2)/2+width/2-miter))+','+str(int(y1-width/2))+' '
+                        poly_str += str(int((x1+x2)/2+width/2))+','+str(int(y1-width/2+miter))+' '
+                        poly_str += str(int((x1+x2)/2+width/2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int((x1+x2)/2-width/2+miter))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int((x1+x2)/2-width/2))+','+str(int(y2+width/2-miter))+' '
+                        poly_str += str(int((x1+x2)/2-width/2))+','+str(int(y1+width/2))+' '
+                        poly_str += str(int(x1))+','+str(int(y1+width/2))+' '
+                else:
+                    # this is x1>x2
+                    if x2>x1:  
+                        poly_str += str(int(x1))+','+str(int(y1+width/2))+' '
+                        poly_str += str(int((x1+x2)/2+width/2-miter))+','+str(int(y1+width/2))+' '
+                        poly_str += str(int((x1+x2)/2+width/2))+','+str(int(y1+width/2-miter))+' '
+                        poly_str += str(int((x1+x2)/2+width/2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int((x1+x2)/2-width/2+miter))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int((x1+x2)/2-width/2))+','+str(int(y2-width/2+miter))+' '
+                        poly_str += str(int((x1+x2)/2-width/2))+','+str(int(y1-width/2))+' '
+                        poly_str += str(int(x1))+','+str(int(y1-width/2))+' '
+                    else:
+                        poly_str += str(int(x1))+','+str(int(y1+width/2))+' '
+                        poly_str += str(int((x1+x2)/2-width/2+miter))+','+str(int(y1+width/2))+' '
+                        poly_str += str(int((x1+x2)/2-width/2))+','+str(int(y1+width/2-miter))+' '
+                        poly_str += str(int((x1+x2)/2-width/2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2+width/2))+' '
+                        poly_str += str(int(x2))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int((x1+x2)/2+width/2-miter))+','+str(int(y2-width/2))+' '
+                        poly_str += str(int((x1+x2)/2+width/2))+','+str(int(y2-width/2+miter))+' '
+                        poly_str += str(int((x1+x2)/2+width/2))+','+str(int(y1-width/2))+' '
+                        #poly_str += str(int((x1+x2)/2+width/2))+','+str(int(y1-width/2+miter))+' '
+                        poly_str += str(int(x1))+','+str(int(y1-width/2))+' '
+            f.write(poly_str+';\n')
+        f.write('DF;\n') # end subset
         
         
 
